@@ -43,6 +43,22 @@
   [data-round="spicy"]{ --accent: var(--spicy); --accent-deep: var(--spicy-deep); }
   [data-round="wild"]{ --accent: var(--wild); --accent-deep: var(--wild-deep); }
 
+  .build-tag{
+    position:fixed;
+    top:8px; right:10px;
+    font-family:'Karla', sans-serif;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:0.03em;
+    color:var(--gold);
+    background:var(--card);
+    border:1px solid var(--hairline);
+    padding:3px 8px;
+    border-radius:99px;
+    z-index:30;
+    opacity:0.85;
+  }
+
   .stage{
     max-width:560px;
     margin:0 auto;
@@ -314,6 +330,7 @@
 <body>
 
 <div class="stage" id="stage">
+  <div class="build-tag">v5 &middot; Sep 6</div>
   <header>
     <div class="monogram">D&amp;S</div>
     <p class="kicker">Bachelorette &middot; Groom's Tell-All</p>
