@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Disha's Bachelorette — What Did Savu Say?</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💍</text></svg>" />
+<style>
+  :root {
+    --pink: #ff5c8a;
+    --pink-dark: #e8386b;
+    --gold: #d4af37;
+    --spicy: #ff6b35;
+    --spicy-dark: #e5502099;
+    --wild: #8e44ad;
+    --wild-dark: #6c2f8c;
+    --bg: #fff5f8;
+    --card: #ffffff;
+    --text: #34202a;
+    --muted: #8a6b78;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(180deg, #fff0f5 0%, #fff8fb 200px, #fff8fb 100%);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
+  header {
+    text-align: center;
+    padding: 36px 20px 20px;
+  }
+  header .emoji-row { font-size: 28px; margin-bottom: 6px; letter-spacing: 4px; }
+  h1 {
+    margin: 0;
+    font-size: clamp(24px, 6vw, 38px);
+    background: linear-gradient(90deg, var(--pink-dark), var(--gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 800;
+  }
+  header p {
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  .tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px 16px 8px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    background: rgba(255,245,248,0.92);
+    backdrop-filter: blur(6px);
+    z-index: 10;
+  }
+  .tab-btn {
+    border: none;
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    background: #f1e2e8;
+    color: var(--muted);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .tab-btn:active { transform: scale(0.96); }
+  .tab-btn[data-section="regular"].active {
+    background: var(--pink); color: white; box-shadow: 0 4px 14px rgba(255,92,138,0.4);
+  }
+  .tab-btn[data-section="spicy"].active {
+    background: var(--spicy); color: white; box-shadow: 0 4px 14px rgba(255,107,53,0.4);
+  }
+  .tab-btn[data-section="wild"].active {
+    background: var(--wild); color: white; box-shadow: 0 4px 14px rgba(142,68,173,0.4);
+  }
+
+  main {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+  .section-banner {
+    text-align: center;
+    font-size: 14px;
+    color: var(--muted);
+    margin: 6px 0 18px;
+    font-style: italic;
+  }
+  .section { display: none; }
+  .section.active { display: block; animation: fadeIn .25s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px);} to { opacity:1; transform: translateY(0);} }
+
+  .card {
+    background: var(--card);
+    border-radius: 18px;
+    padding: 18px 18px 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 10px rgba(180,80,110,0.08);
+    border: 1px solid #ffe3ec;
+  }
+  .card .qnum {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    color: white;
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+  }
+  .section[data-section="regular"] .qnum { background: var(--pink); }
+  .section[data-section="spicy"] .qnum { background: var(--spicy); }
+  .section[data-section="wild"] .qnum { background: var(--wild); }
+
+  .card .qtext {
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.4;
+    margin: 0 0 14px;
+  }
+
+  .play-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    border: none;
+    border-radius: 14px;
+    padding: 13px 16px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    color: white;
+    background: linear-gradient(135deg, var(--pink), var(--pink-dark));
+    transition: transform .12s ease, filter .12s ease;
+  }
+  .section[data-section="spicy"] .play-btn { background: linear-gradient(135deg, #ff8552, var(--spicy)); }
+  .section[data-section="wild"] .play-btn { background: linear-gradient(135deg, #a55cc9, var(--wild-dark)); }
+  .play-btn:active { transform: scale(0.98); }
+  .play-btn .icon { font-size: 18px; flex-shrink: 0; }
+  .play-btn .label { flex: 1; text-align: left; }
+  .play-btn .timer { font-variant-numeric: tabular-nums; font-size: 13px; opacity: 0.9; }
+
+  .progress-wrap {
+    height: 5px;
+    background: #ffffff44;
+    border-radius: 999px;
+    margin-top: 10px;
+    overflow: hidden;
+    display: none;
+  }
+  .play-btn.playing + .progress-wrap,
+  .card.playing .progress-wrap { display: block; }
+  .progress-bar {
+    height: 100%;
+    width: 0%;
+    background: white;
+    border-radius: 999px;
+  }
+
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 30px;
+    padding: 0 20px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="emoji-row">💍 🥂 🎉</div>
+  <h1>Disha's Bachelorette</h1>
+  <p>He answered. She'll guess. Tap a question, then hit the button to hear what Savu really said.</p>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" data-section="regular">💗 Regular</button>
+  <button class="tab-btn" data-section="spicy">🌶️ Spicy</button>
+  <button class="tab-btn" data-section="wild">🔥 Wild Cards</button>
+</div>
+
+<main>
+  <div class="section active" data-section="regular">
+    <p class="section-banner">Sweet & simple — warm-up round 💗</p>
+    <div class="card-list" id="list-regular"></div>
+  </div>
+  <div class="section" data-section="spicy">
+    <p class="section-banner">Turning up the heat 🌶️</p>
+    <div class="card-list" id="list-spicy"></div>
+  </div>
+  <div class="section" data-section="wild">
+    <p class="section-banner">Anything goes from here 🔥</p>
+    <div class="card-list" id="list-wild"></div>
+  </div>
+</main>
+
+<footer>Made with love for Disha's big day 🎊</footer>
+
+<script>
+const DATA = {
+  regular: [
+    "Who said \"I love you\" first?",
+    "Who's more likely to start an argument over food?",
+    "What's your Disha signature \"I'm mad\" face?",
+    "Who's the bigger cuddler?",
+    "What's the weirdest pet name you've ever used? Disha's for you and yours for Disha",
+    "Who's more likely to fall asleep mid-conversation?",
+    "If your relationship had a theme song, what would it be?",
+    "Who gives the better gifts?",
+    "Who's more dramatic in a crisis?",
+    "Who laughs at their own jokes the most?",
+    "Who's the better chef?",
+    "Who's most likely to forget what day it is?",
+    "Who can't stay mad for more than ten minutes?",
+    "Who's more addicted to selfies?",
+    "What's your love story in three emojis?",
+    "Who's more likely to text first after a fight?"
+  ],
+  spicy: [
+    "Who's more adventurous in bed?",
+    "Who initiated the first kiss?",
+    "Who's more jealous?",
+    "What's Disha's most annoying habit?",
+    "What's the weirdest place you've been intimate?",
+    "Who's more likely to send a risky text to the wrong person?"
+  ],
+  wild: [
+    "If Disha were in a reality TV show, which character would she be?",
+    "What would Disha be arrested for?",
+    "What's Disha's most unhinged behaviour?",
+    "If Disha could ditch the wedding for one celebrity, who?",
+    "What's the most embarrassing thing Disha's done in front of you?",
+    "What's Disha's biggest red flag you've ignored?",
+    "If your relationship was a movie, what would it be called?",
+    "Who's more likely to accidentally start a fire?",
+    "What's the most ridiculous argument you've had?",
+    "What will Disha be doing at 80 that will embarrass your grandkids?"
+  ]
+};
+
+let currentAudio = null;
+let currentBtn = null;
+let rafId = null;
+
+function fmtTime(t) {
+  if (!isFinite(t)) return "0:00";
+  const m = Math.floor(t / 60);
+  const s = Math.floor(t % 60);
+  return m + ":" + String(s).padStart(2, "0");
+}
+
+function resetButton(btn) {
+  btn.classList.remove("playing");
+  const icon = btn.querySelector(".icon");
+  const label = btn.querySelector(".label");
+  icon.textContent = "🔊";
+  label.textContent = "What did Savu say?";
+  const bar = btn.parentElement.querySelector(".progress-bar");
+  if (bar) bar.style.width = "0%";
+  if (rafId) cancelAnimationFrame(rafId);
+}
+
+function updateProgress(btn, audio) {
+  const bar = btn.parentElement.querySelector(".progress-bar");
+  const timerEl = btn.querySelector(".timer");
+  function tick() {
+    if (audio.duration) {
+      const pct = (audio.currentTime / audio.duration) * 100;
+      if (bar) bar.style.width = pct + "%";
+      if (timerEl) timerEl.textContent = fmtTime(audio.currentTime) + " / " + fmtTime(audio.duration);
+    }
+    rafId = requestAnimationFrame(tick);
+  }
+  tick();
+}
+
+function buildCard(section, index, question) {
+  const num = index + 1;
+  const src = `audio/${section}-${String(num).padStart(2,"0")}.mp3`;
+
+  const card = document.createElement("div");
+  card.className = "card";
+
+  const badge = document.createElement("span");
+  badge.className = "qnum";
+  badge.textContent = "Q" + num;
+  card.appendChild(badge);
+
+  const qtext = document.createElement("p");
+  qtext.className = "qtext";
+  qtext.textContent = question;
+  card.appendChild(qtext);
+
+  const btn = document.createElement("button");
+  btn.className = "play-btn";
+  btn.innerHTML = `<span class="icon">🔊</span><span class="label">What did Savu say?</span><span class="timer"></span>`;
+  card.appendChild(btn);
+
+  const progWrap = document.createElement("div");
+  progWrap.className = "progress-wrap";
+  const progBar = document.createElement("div");
+  progBar.className = "progress-bar";
+  progWrap.appendChild(progBar);
+  card.appendChild(progWrap);
+
+  const audio = new Audio(src);
+  audio.preload = "none";
+
+  btn.addEventListener("click", () => {
+    if (currentAudio && currentAudio !== audio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+      if (currentBtn) resetButton(currentBtn);
+    }
+
+    if (audio.paused) {
+      audio.play().catch(()=>{});
+      btn.classList.add("playing");
+      btn.querySelector(".icon").textContent = "⏸️";
+      btn.querySelector(".label").textContent = "Playing...";
+      currentAudio = audio;
+      currentBtn = btn;
+      updateProgress(btn, audio);
+    } else {
+      audio.pause();
+      resetButton(btn);
+    }
+  });
+
+  audio.addEventListener("ended", () => {
+    resetButton(btn);
+    audio.currentTime = 0;
+    if (currentAudio === audio) { currentAudio = null; currentBtn = null; }
+  });
+
+  return card;
+}
+
+Object.keys(DATA).forEach(section => {
+  const list = document.getElementById("list-" + section);
+  DATA[section].forEach((q, i) => list.appendChild(buildCard(section, i, q)));
+});
+
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const section = btn.dataset.section;
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b === btn));
+    document.querySelectorAll(".section").forEach(s => s.classList.toggle("active", s.dataset.section === section));
+    if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
+    if (currentBtn) resetButton(currentBtn);
+    currentAudio = null; currentBtn = null;
+  });
+});
+</script>
+
+</body>
+</html>
