@@ -377,18 +377,33 @@ slides.push({ type:"end" });
 const totalQuestions = ORDER.reduce((n, r) => n + ROUNDS[r].length, 0);
 
 let current = 0;
-let active = { audio:null, btn:null, raf:null };
+
+// A single shared <audio> element handles every clip: swapping .src on one
+// element is far more reliable across embedding contexts (and lighter on
+// memory) than instantiating 32 separate Audio objects up front.
+const player = new Audio();
+player.preload = "none";
+let active = { btn:null, barFill:null, key:null, raf:null };
 
 function stopActive(){
-  if(active.audio){ active.audio.pause(); }
+  player.pause();
   if(active.raf) cancelAnimationFrame(active.raf);
   if(active.btn){
     active.btn.classList.remove("is-playing");
     active.btn.querySelector(".dot").innerHTML = ICONS.play;
     active.btn.querySelector(".label").textContent = "What did Savu say?";
   }
-  active = { audio:null, btn:null, raf:null };
+  if(active.barFill) active.barFill.style.width = "0%";
+  active = { btn:null, barFill:null, key:null, raf:null };
 }
+
+player.addEventListener("ended", stopActive);
+player.addEventListener("error", () => {
+  if(active.btn){
+    active.btn.querySelector(".label").textContent = "Couldn't play — tap to retry";
+  }
+  stopActive();
+});
 
 function questionsSeenThrough(slideIdx){
   let n = 0;
@@ -427,29 +442,32 @@ function buildQuestionSlide(item){
   bar.appendChild(barFill);
   card.appendChild(bar);
 
-  const audio = new Audio(item.src);
+  const key = `${item.round}-${item.index}`;
 
   btn.addEventListener("click", () => {
-    if(active.audio === audio){ stopActive(); return; }
+    if(active.key === key && !player.paused){ stopActive(); return; }
     stopActive();
-    audio.currentTime = 0;
-    audio.play().catch(()=>{});
+    player.src = item.src;
+    player.currentTime = 0;
+    const playPromise = player.play();
+    if(playPromise && playPromise.catch){
+      playPromise.catch(() => {
+        btn.querySelector(".label").textContent = "Couldn't play — tap to retry";
+      });
+    }
     btn.classList.add("is-playing");
     btn.querySelector(".dot").innerHTML = ICONS.pause;
     btn.querySelector(".label").textContent = "Playing…";
-    active = { audio, btn, raf:null };
+    active = { btn, barFill, key, raf:null };
     function tick(){
-      if(audio.duration){
-        barFill.style.width = (audio.currentTime/audio.duration*100) + "%";
-        btn.querySelector(".time").textContent = fmt(audio.currentTime) + " / " + fmt(audio.duration);
+      if(active.key !== key) return;
+      if(player.duration){
+        barFill.style.width = (player.currentTime/player.duration*100) + "%";
+        btn.querySelector(".time").textContent = fmt(player.currentTime) + " / " + fmt(player.duration);
       }
       active.raf = requestAnimationFrame(tick);
     }
     tick();
-  });
-  audio.addEventListener("ended", () => {
-    if(active.audio === audio) stopActive();
-    barFill.style.width = "0%";
   });
 
   el.appendChild(card);
