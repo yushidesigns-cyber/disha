@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Disha's Bachelorette — Games</title>
+<title>One Word First — Disha's Bachelorette</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💍</text></svg>" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,14 +19,10 @@
     --rose:#C64B68;
     --rose-deep:#A23752;
     --gold:#B07F2E;
-    --spicy:#BE5A2B;
-    --spicy-deep:#96431D;
-    --wild:#6C4E85;
-    --wild-deep:#523A66;
-    --mint:#4C8C7A;
-    --mint-deep:#386A5C;
+    --present:#B07F2E;
+    --absent:#D9C7AE;
   }
-  *{ box-sizing:border-box; }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html,body{ margin:0; padding:0; }
   body{
     background:var(--paper);
@@ -58,7 +54,7 @@
   }
 
   .stage{
-    max-width:560px;
+    max-width:440px;
     margin:0 auto;
     min-height:100vh;
     display:flex;
@@ -68,34 +64,22 @@
 
   header{
     text-align:center;
-    padding:44px 4px 22px;
+    padding:40px 4px 8px;
     flex-shrink:0;
   }
   .monogram{
-    width:56px; height:56px;
-    margin:0 auto 16px;
+    width:52px; height:52px;
+    margin:0 auto 14px;
     border-radius:50%;
     border:1.5px solid var(--hairline);
     display:flex; align-items:center; justify-content:center;
     font-family:'Fraunces', serif;
     font-style:italic;
     font-weight:500;
-    font-size:19px;
+    font-size:18px;
     color:var(--gold);
     background:var(--card);
   }
-  h1{
-    margin:0 0 10px;
-    font-family:'Fraunces', serif;
-    font-style:italic;
-    font-weight:500;
-    font-size:clamp(26px, 7vw, 34px);
-    line-height:1.15;
-    letter-spacing:-0.01em;
-    text-wrap:balance;
-    color:var(--ink);
-  }
-  h1 em{ color:var(--rose-deep); }
   .kicker{
     font-family:'Karla', sans-serif;
     font-weight:700;
@@ -105,162 +89,401 @@
     color:var(--gold);
     margin:0 0 12px;
   }
+  h1{
+    margin:0 0 10px;
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:clamp(24px, 7vw, 32px);
+    line-height:1.15;
+    letter-spacing:-0.01em;
+    text-wrap:balance;
+    color:var(--ink);
+  }
+  h1 em{ color:var(--rose-deep); }
   header p.sub{
     color:var(--muted);
-    font-size:15px;
+    font-size:14px;
     line-height:1.5;
-    max-width:36ch;
+    max-width:32ch;
     margin:0 auto;
   }
 
-  main.games{
+  main.puzzle{
     flex:1;
     display:flex;
     flex-direction:column;
-    gap:14px;
-    padding:12px 0 6px;
+    align-items:center;
+    gap:20px;
+    padding:14px 0 6px;
   }
 
-  a.game-card{
+  .grid{
+    display:grid;
+    grid-template-rows:repeat(6, 1fr);
+    gap:6px;
+    width:100%;
+    max-width:340px;
+  }
+  .grid-row{
+    display:grid;
+    grid-template-columns:repeat(6, 1fr);
+    gap:6px;
+  }
+  .tile{
+    aspect-ratio:1;
+    border:1.5px solid var(--hairline);
+    border-radius:8px;
+    background:var(--card);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(16px, 4.6vw, 22px);
+    color:var(--ink);
+    text-transform:uppercase;
+    transition:transform .12s ease;
+  }
+  .tile.filled{ border-color:#C9AE86; }
+  .tile.pop{ transform:scale(1.06); }
+  .tile.correct{ background:var(--rose); border-color:var(--rose); color:#fff; }
+  .tile.present{ background:var(--present); border-color:var(--present); color:#fff; }
+  .tile.absent{ background:var(--absent); border-color:var(--absent); color:#fff; }
+  .tile.flip{ animation:flip .45s ease; }
+  @keyframes flip{
+    0%{ transform:rotateX(0); }
+    50%{ transform:rotateX(90deg); }
+    100%{ transform:rotateX(0); }
+  }
+
+  .toast{
+    min-height:18px;
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    color:var(--rose-deep);
+    text-align:center;
+  }
+
+  .keyboard{
+    width:100%;
+    max-width:400px;
     display:flex;
-    align-items:center;
-    gap:16px;
+    flex-direction:column;
+    gap:7px;
+  }
+  .key-row{
+    display:flex;
+    gap:5px;
+    justify-content:center;
+  }
+  .key{
+    flex:1;
+    min-width:0;
+    max-width:38px;
+    height:46px;
+    border:none;
+    border-radius:7px;
     background:var(--card);
     border:1px solid var(--hairline);
-    border-radius:20px;
-    padding:20px;
-    text-decoration:none;
     color:var(--ink);
-    transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
-  }
-  a.game-card:active{ transform:scale(0.98); }
-  @media (hover:hover){
-    a.game-card:hover{
-      border-color:var(--accent, var(--rose));
-      box-shadow:0 6px 18px -10px rgba(58,36,54,0.25);
-    }
-  }
-
-  .game-icon{
-    flex-shrink:0;
-    width:54px; height:54px;
-    border-radius:16px;
-    display:flex; align-items:center; justify-content:center;
-    font-size:24px;
-    background:var(--paper-deep);
-  }
-  .game-body{ flex:1; min-width:0; }
-  .game-eyebrow{
     font-family:'Karla', sans-serif;
     font-weight:700;
-    font-size:10.5px;
-    letter-spacing:0.1em;
+    font-size:12.5px;
     text-transform:uppercase;
-    margin:0 0 4px;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    user-select:none;
+    transition:background .15s ease, transform .1s ease;
   }
-  .game-title{
+  .key:active{ transform:scale(0.94); }
+  .key.wide{ max-width:58px; font-size:10.5px; }
+  .key.correct{ background:var(--rose); border-color:var(--rose); color:#fff; }
+  .key.present{ background:var(--present); border-color:var(--present); color:#fff; }
+  .key.absent{ background:var(--absent); border-color:var(--absent); color:#fff; }
+
+  .end-panel{
+    display:none;
+    width:100%;
+    max-width:340px;
+    text-align:center;
+    background:var(--card);
+    border:1px solid var(--hairline);
+    border-radius:18px;
+    padding:22px 20px;
+    margin-top:4px;
+  }
+  .end-panel.show{ display:block; }
+  .end-title{
     font-family:'Fraunces', serif;
     font-style:italic;
     font-weight:500;
     font-size:19px;
-    margin:0 0 5px;
+    margin:0 0 6px;
     color:var(--ink);
   }
-  .game-desc{
-    margin:0;
+  .end-sub{
+    font-size:13px;
+    color:var(--muted);
+    line-height:1.5;
+    margin:0 0 16px;
+  }
+  .end-sub b{ color:var(--rose-deep); letter-spacing:0.04em; }
+  a.enter-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--rose);
+    color:#fff;
+    text-decoration:none;
+    font-family:'Karla', sans-serif;
+    font-weight:700;
     font-size:13.5px;
-    line-height:1.45;
-    color:var(--muted);
+    letter-spacing:0.02em;
+    padding:13px 22px;
+    border-radius:99px;
+    transition:transform .15s ease, box-shadow .15s ease;
   }
-  .game-arrow{
-    flex-shrink:0;
-    width:30px; height:30px;
-    border-radius:50%;
-    border:1.5px solid var(--hairline);
-    display:flex; align-items:center; justify-content:center;
-    color:var(--muted);
+  a.enter-btn:active{ transform:scale(0.97); }
+  @media (hover:hover){
+    a.enter-btn:hover{ box-shadow:0 6px 18px -8px rgba(198,75,104,0.55); }
   }
-  .game-arrow svg{ width:13px; height:13px; }
-
-  a.game-card[data-tint="rose"] .game-eyebrow{ color:var(--rose-deep); }
-  a.game-card[data-tint="rose"] .game-icon{ background:#F7E2E7; }
-  a.game-card[data-tint="mint"] .game-eyebrow{ color:var(--mint-deep); }
-  a.game-card[data-tint="mint"] .game-icon{ background:#E1EEE9; }
-  a.game-card[data-tint="spicy"] .game-eyebrow{ color:var(--spicy-deep); }
-  a.game-card[data-tint="spicy"] .game-icon{ background:#F5E3D6; }
-  a.game-card[data-tint="wild"] .game-eyebrow{ color:var(--wild-deep); }
-  a.game-card[data-tint="wild"] .game-icon{ background:#E9E2EF; }
+  a.enter-btn svg{ width:14px; height:14px; }
 
   footer.credit{
     text-align:center;
     color:var(--muted);
     font-family:'Fraunces', serif;
     font-style:italic;
-    font-size:13.5px;
-    padding-top:22px;
+    font-size:13px;
+    padding-top:20px;
     flex-shrink:0;
   }
 
   @media (prefers-reduced-motion: reduce){
-    a.game-card{ transition:none; }
+    .tile.flip{ animation:none; }
+    a.enter-btn{ transition:none; }
   }
 </style>
 </head>
 <body>
 
 <div class="stage">
-  <div class="build-tag">v8 &middot; Sep 8</div>
+  <div class="build-tag">v10 &middot; Sep 8 (wordle gate)</div>
   <header>
     <div class="monogram">D&amp;S</div>
     <p class="kicker">Disha's Bachelorette</p>
-    <h1>Pick a <em>game</em>, start the night</h1>
-    <p class="sub">Four games for the party. Tap one to jump in — no sign-in, no app, just your phone.</p>
+    <h1>One word before <em>the party</em> starts</h1>
+    <p class="sub">Six letters, six tries. Crack it to unlock tonight's games.</p>
   </header>
 
-  <main class="games">
-    <a class="game-card" data-tint="rose" href="savu-says.html">
-      <div class="game-icon">💍</div>
-      <div class="game-body">
-        <p class="game-eyebrow">Q&amp;A &middot; Audio</p>
-        <h2 class="game-title">What Did Savu Say?</h2>
-        <p class="game-desc">32 questions across three rounds. Guess first, then press play to hear the groom's real answer.</p>
-      </div>
-      <div class="game-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 18l6-6-6-6"/></svg></div>
-    </a>
+  <main class="puzzle">
+    <div class="grid" id="grid"></div>
+    <p class="toast" id="toast"></p>
+    <div class="keyboard" id="keyboard"></div>
 
-    <a class="game-card" data-tint="mint" href="never-have-i-ever.html">
-      <div class="game-icon">🥂</div>
-      <div class="game-body">
-        <p class="game-eyebrow">Card Deck</p>
-        <h2 class="game-title">Never Have I Ever</h2>
-        <p class="game-desc">Bachelorette edition. Flip through the deck — if it's true for you, you're taking a sip.</p>
-      </div>
-      <div class="game-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 18l6-6-6-6"/></svg></div>
-    </a>
-
-    <a class="game-card" data-tint="spicy" href="dare-wheel.html">
-      <div class="game-icon">🎡</div>
-      <div class="game-body">
-        <p class="game-eyebrow">Spin The Wheel</p>
-        <h2 class="game-title">Spin For A Dare</h2>
-        <p class="game-desc">Give the bride a spin. Mild, bold, or wild — the wheel decides what happens next.</p>
-      </div>
-      <div class="game-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 18l6-6-6-6"/></svg></div>
-    </a>
-
-    <a class="game-card" data-tint="wild" href="bride-bingo.html">
-      <div class="game-icon">✅</div>
-      <div class="game-body">
-        <p class="game-eyebrow">Party Bingo</p>
-        <h2 class="game-title">Bride Bingo</h2>
-        <p class="game-desc">A fresh card every time. Mark off the chaos as the night unfolds — first to bingo wins.</p>
-      </div>
-      <div class="game-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 18l6-6-6-6"/></svg></div>
-    </a>
+    <div class="end-panel" id="endPanel">
+      <p class="end-title" id="endTitle"></p>
+      <p class="end-sub" id="endSub"></p>
+      <a class="enter-btn" href="games.html">
+        Enter the party
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 18l6-6-6-6"/></svg>
+      </a>
+    </div>
   </main>
 
   <footer class="credit">With love, for Disha's big night</footer>
 </div>
+
+<script>
+(function(){
+  const ANSWER = "SMIRKY";
+  const LEN = ANSWER.length;
+  const MAX_GUESSES = 6;
+
+  const grid = document.getElementById("grid");
+  const toast = document.getElementById("toast");
+  const keyboard = document.getElementById("keyboard");
+  const endPanel = document.getElementById("endPanel");
+  const endTitle = document.getElementById("endTitle");
+  const endSub = document.getElementById("endSub");
+
+  let current = "";
+  let row = 0;
+  let done = false;
+
+  let solvedAlready = false;
+  try{ solvedAlready = localStorage.getItem("disha-wordle-solved") === "1"; }catch(e){}
+
+  // build grid
+  for(let r=0;r<MAX_GUESSES;r++){
+    const rowEl = document.createElement("div");
+    rowEl.className = "grid-row";
+    rowEl.id = "row-"+r;
+    for(let c=0;c<LEN;c++){
+      const tile = document.createElement("div");
+      tile.className = "tile";
+      tile.id = "tile-"+r+"-"+c;
+      rowEl.appendChild(tile);
+    }
+    grid.appendChild(rowEl);
+  }
+
+  const KEY_ROWS = [
+    ["Q","W","E","R","T","Y","U","I","O","P"],
+    ["A","S","D","F","G","H","J","K","L"],
+    ["ENTER","Z","X","C","V","B","N","M","BACK"]
+  ];
+  const keyEls = {};
+  KEY_ROWS.forEach(rowKeys => {
+    const rowEl = document.createElement("div");
+    rowEl.className = "key-row";
+    rowKeys.forEach(k => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "key" + (k.length > 1 ? " wide" : "");
+      btn.textContent = k === "BACK" ? "⌫" : (k === "ENTER" ? "Enter" : k);
+      btn.addEventListener("click", () => handleKey(k));
+      rowEl.appendChild(btn);
+      if(k.length === 1) keyEls[k] = btn;
+    });
+    keyboard.appendChild(rowEl);
+  });
+
+  function showToast(msg){
+    toast.textContent = msg;
+    if(msg){ setTimeout(() => { if(toast.textContent === msg) toast.textContent = ""; }, 1600); }
+  }
+
+  function handleKey(k){
+    if(done) return;
+    if(k === "ENTER"){ submitGuess(); return; }
+    if(k === "BACK"){
+      current = current.slice(0, -1);
+      renderCurrentRow();
+      return;
+    }
+    if(/^[A-Z]$/.test(k) && current.length < LEN){
+      current += k;
+      renderCurrentRow();
+    }
+  }
+
+  function renderCurrentRow(){
+    for(let c=0;c<LEN;c++){
+      const tile = document.getElementById("tile-"+row+"-"+c);
+      const letter = current[c] || "";
+      tile.textContent = letter;
+      tile.classList.toggle("filled", !!letter);
+    }
+  }
+
+  function submitGuess(){
+    if(current.length < LEN){
+      showToast("Not enough letters");
+      shakeRow();
+      return;
+    }
+    const guess = current;
+    const result = scoreGuess(guess);
+
+    for(let c=0;c<LEN;c++){
+      const tile = document.getElementById("tile-"+row+"-"+c);
+      const state = result[c];
+      setTimeout(() => {
+        tile.classList.add("flip");
+        setTimeout(() => tile.classList.add(state), 220);
+      }, c * 90);
+      const letter = guess[c];
+      const key = keyEls[letter];
+      if(key){
+        const rank = { absent:0, present:1, correct:2 };
+        const currentRank = key.dataset.rank ? Number(key.dataset.rank) : -1;
+        if(rank[state] > currentRank){
+          key.className = "key" + (state === "correct" ? " correct" : state === "present" ? " present" : " absent");
+          key.dataset.rank = rank[state];
+        }
+      }
+    }
+
+    const win = guess === ANSWER;
+    row++;
+
+    setTimeout(() => {
+      if(win){
+        finish(true);
+      }else if(row >= MAX_GUESSES){
+        finish(false);
+      }
+    }, LEN * 90 + 480);
+
+    current = "";
+  }
+
+  function scoreGuess(guess){
+    const result = new Array(LEN).fill("absent");
+    const answerLetters = ANSWER.split("");
+    const used = new Array(LEN).fill(false);
+
+    for(let i=0;i<LEN;i++){
+      if(guess[i] === answerLetters[i]){
+        result[i] = "correct";
+        used[i] = true;
+      }
+    }
+    for(let i=0;i<LEN;i++){
+      if(result[i] === "correct") continue;
+      const idx = answerLetters.findIndex((ltr, j) => ltr === guess[i] && !used[j]);
+      if(idx !== -1){
+        result[i] = "present";
+        used[idx] = true;
+      }
+    }
+    return result;
+  }
+
+  function shakeRow(){
+    const rowEl = document.getElementById("row-"+row);
+    rowEl.style.transform = "translateX(-4px)";
+    setTimeout(() => { rowEl.style.transform = "translateX(4px)"; }, 60);
+    setTimeout(() => { rowEl.style.transform = ""; }, 120);
+  }
+
+  function finish(win){
+    done = true;
+    try{ localStorage.setItem("disha-wordle-solved", "1"); }catch(e){}
+    if(win){
+      endTitle.textContent = "That's the one.";
+      endSub.innerHTML = "The word was <b>" + ANSWER + "</b>. Time to play.";
+    }else{
+      endTitle.textContent = "So close.";
+      endSub.innerHTML = "The word was <b>" + ANSWER + "</b>. Come on in anyway.";
+    }
+    endPanel.classList.add("show");
+  }
+
+  function skipToEnd(){
+    // returning visitor who already solved it once this device
+    row = 0;
+    endTitle.textContent = "Welcome back.";
+    endSub.innerHTML = "You already cracked <b>" + ANSWER + "</b>. Jump right in.";
+    endPanel.classList.add("show");
+    done = true;
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if(done) return;
+    const k = e.key.toUpperCase();
+    if(k === "ENTER") handleKey("ENTER");
+    else if(k === "BACKSPACE") handleKey("BACK");
+    else if(/^[A-Z]$/.test(k)) handleKey(k);
+  });
+
+  if(solvedAlready){
+    skipToEnd();
+  }
+})();
+</script>
 
 </body>
 </html>

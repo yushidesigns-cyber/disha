@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Disha's Bachelorette — Games</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💍</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500;1,9..144,600&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBF3E9;
+    --paper-deep:#F5E9D8;
+    --ink:#3A2436;
+    --muted:#8C7268;
+    --hairline:#EAD8BE;
+    --card:#FFFEFB;
+    --rose:#C64B68;
+    --rose-deep:#A23752;
+    --gold:#B07F2E;
+    --spicy:#BE5A2B;
+    --spicy-deep:#96431D;
+    --wild:#6C4E85;
+    --wild-deep:#523A66;
+    --mint:#4C8C7A;
+    --mint-deep:#386A5C;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 12% 8%, var(--paper-deep) 0%, transparent 42%),
+      radial-gradient(circle at 92% 18%, var(--paper-deep) 0%, transparent 38%);
+    color:var(--ink);
+    font-family:'Karla', ui-sans-serif, system-ui, sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{ background:var(--rose); color:#fff; }
+
+  .build-tag{
+    position:fixed;
+    top:8px; right:10px;
+    font-family:'Karla', sans-serif;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:0.03em;
+    color:var(--gold);
+    background:var(--card);
+    border:1px solid var(--hairline);
+    padding:3px 8px;
+    border-radius:99px;
+    z-index:30;
+    opacity:0.85;
+  }
+
+  .stage{
+    max-width:560px;
+    margin:0 auto;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    padding:0 20px 30px;
+  }
+
+  header{
+    text-align:center;
+    padding:44px 4px 22px;
+    flex-shrink:0;
+  }
+  .monogram{
+    width:56px; height:56px;
+    margin:0 auto 16px;
+    border-radius:50%;
+    border:1.5px solid var(--hairline);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:19px;
+    color:var(--gold);
+    background:var(--card);
+  }
+  h1{
+    margin:0 0 10px;
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:clamp(26px, 7vw, 34px);
+    line-height:1.15;
+    letter-spacing:-0.01em;
+    text-wrap:balance;
+    color:var(--ink);
+  }
+  h1 em{ color:var(--rose-deep); }
+  .kicker{
+    font-family:'Karla', sans-serif;
+    font-weight:700;
+    font-size:11px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin:0 0 12px;
+  }
+  header p.sub{
+    color:var(--muted);
+    font-size:15px;
+    line-height:1.5;
+    max-width:36ch;
+    margin:0 auto;
+  }
+
+  main.games{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    padding:12px 0 6px;
+  }
+
+  a.game-card{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    background:var(--card);
+    border:1px solid var(--hairline);
+    border-radius:20px;
+    padding:20px;
+    text-decoration:none;
+    color:var(--ink);
+    transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  }
+  a.game-card:active{ transform:scale(0.98); }
+  @media (hover:hover){
+    a.game-card:hover{
+      border-color:var(--accent, var(--rose));
+      box-shadow:0 6px 18px -10px rgba(58,36,54,0.25);
+    }
+  }
+
+  .game-icon{
+    flex-shrink:0;
+    width:54px; height:54px;
+    border-radius:16px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:24px;
+    background:var(--paper-deep);
+  }
+  .game-body{ flex:1; min-width:0; }
+  .game-eyebrow{
+    font-family:'Karla', sans-serif;
+    font-weight:700;
+    font-size:10.5px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    margin:0 0 4px;
+  }
+  .game-title{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:19px;
+    margin:0 0 5px;
+    color:var(--ink);
+  }
+  .game-desc{
+    margin:0;
+    font-size:13.5px;
+    line-height:1.45;
+    color:var(--muted);
+  }
+  .game-arrow{
+    flex-shrink:0;
+    width:30px; height:30px;
+    border-radius:50%;
+    border:1.5px solid var(--hairline);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--muted);
+  }
+  .game-arrow svg{ width:13px; height:13px; }
+
+  a.game-card[data-tint="rose"] .game-eyebrow{ color:var(--rose-deep); }
+  a.game-card[data-tint="rose"] .game-icon{ background:#F7E2E7; }
+  a.game-card[data-tint="mint"] .game-eyebrow{ color:var(--mint-deep); }
+  a.game-card[data-tint="mint"] .game-icon{ background:#E1EEE9; }
+  a.game-card[data-tint="spicy"] .game-eyebrow{ color:var(--spicy-deep); }
+  a.game-card[data-tint="spicy"] .game-icon{ background:#F5E3D6; }
+  a.game-card[data-tint="wild"] .game-eyebrow{ color:var(--wild-deep); }
+  a.game-card[data-tint="wild"] .game-icon{ background:#E9E2EF; }
+
+  footer.credit{
+    text-align:center;
+    color:var(--muted);
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:13.5px;
+    padding-top:22px;
+    flex-shrink:0;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    a.game-card{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="build-tag">v10 &middot; Sep 8 (wordle gate)</div>
+  <header>
+    <div class="monogram">D&amp;S</div>
+    <p class="kicker">Disha's Bachelorette</p>
+    <h1>Pick a <em>game</em>, start the night</h1>
+    <p class="sub">Four games for the party. Tap one to jump in — no sign-in, no app, just your phone.</p>
+  </header>
+
+  <main class="games">
+    <a class="game-card" data-tint="rose" href="savu-says.html">
+      <div class="game-icon">💍</div>
+      <div class="game-body">
+        <p class="game-eyebrow">Q&amp;A &middot; Audio</p>
+        <h2 class="game-title">What Did Savu Say?</h2>
+        <p class="game-desc">32 questions across three rounds. Guess first, then press play to hear the groom's real answer.</p>
+      </div>
+      <div class="game-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 18l6-6-6-6"/></svg></div>
+    </a>
+
+    <a class="game-card" data-tint="mint" href="never-have-i-ever.html">
+      <div class="game-icon">🥂</div>
+      <div class="game-body">
+        <p class="game-eyebrow">Card Deck</p>
+        <h2 class="game-title">Never Have I Ever</h2>
+        <p class="game-desc">Bachelorette edition. Flip through the deck — if it's true for you, you're taking a sip.</p>
+      </div>
+      <div class="game-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 18l6-6-6-6"/></svg></div>
+    </a>
+
+    <a class="game-card" data-tint="spicy" href="dare-wheel.html">
+      <div class="game-icon">🎡</div>
+      <div class="game-body">
+        <p class="game-eyebrow">Spin The Wheel</p>
+        <h2 class="game-title">Spin For A Dare</h2>
+        <p class="game-desc">Give the bride a spin. Mild, bold, or wild — the wheel decides what happens next.</p>
+      </div>
+      <div class="game-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 18l6-6-6-6"/></svg></div>
+    </a>
+
+    <a class="game-card" data-tint="wild" href="bride-bingo.html">
+      <div class="game-icon">✅</div>
+      <div class="game-body">
+        <p class="game-eyebrow">Party Bingo</p>
+        <h2 class="game-title">Bride Bingo</h2>
+        <p class="game-desc">A fresh card every time. Mark off the chaos as the night unfolds — first to bingo wins.</p>
+      </div>
+      <div class="game-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 18l6-6-6-6"/></svg></div>
+    </a>
+  </main>
+
+  <footer class="credit">With love, for Disha's big night</footer>
+</div>
+
+</body>
+</html>

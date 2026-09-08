@@ -1,7 +1,9 @@
 # Disha's Bachelorette — Game Night
 
-A mobile-friendly hub of games for Disha's bachelorette. `index.html` is the
-home page — pick a game, tap in, no sign-in or app required.
+A mobile-friendly hub of games for Disha's bachelorette. `index.html` is a
+Wordle-style gate (six letters, six tries — the answer is SMIRKY); solving it
+(or running out of guesses) unlocks `games.html`, the home page where you
+pick a game and tap in — no sign-in or app required.
 
 ## Games
 - **What Did Savu Say?** (`savu-says.html`) — three rounds of questions about
@@ -16,21 +18,24 @@ home page — pick a game, tap in, no sign-in or app required.
   five in a row wins.
 
 ## Structure
-- `index.html` — the game hub / home page.
+- `index.html` — the Wordle-style entry gate (answer: SMIRKY); links to
+  `games.html` once solved or after the guesses run out.
+- `games.html` — the game hub / home page.
 - `savu-says.html`, `never-have-i-ever.html`, `dare-wheel.html`,
   `bride-bingo.html` — one self-contained file per game (markup, styles, and
-  script all in one file, no build step, no dependencies).
+  script all in one file, no build step, no dependencies). Each links back
+  to `games.html`.
 - `audio/` — 32 individual answer clips for "What Did Savu Say?", cut from
   the 3 original recordings (`regular-01.mp3`…`regular-16.mp3`,
   `spicy-01.mp3`…`spicy-06.mp3`, `wild-01.mp3`…`wild-10.mp3`), numbered to
   match the on-screen question order.
-- `savu-local.html` — a fully self-contained, offline copy of "What Did Savu
-  Say?" (audio embedded as data URIs) for opening directly as a local file
-  without hosting.
+- `savu-local.html` — an older, no-longer-maintained offline copy of "What
+  Did Savu Say?" (audio embedded as data URIs). Audio and content updates go
+  to `savu-says.html` only.
 
 ## How to use
 Open `index.html` in a browser (locally, or host the folder anywhere static,
-e.g. GitHub Pages) and pick a game.
+e.g. GitHub Pages) — solve the word, then pick a game from the hub.
 
 ## Note on the audio clips
 The three original recordings were each one continuous take, with Savish
