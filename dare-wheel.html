@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Spin For A Dare — Disha's Bachelorette</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎡</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500;1,9..144,600&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBF3E9;
+    --paper-deep:#F5E9D8;
+    --ink:#3A2436;
+    --muted:#8C7268;
+    --hairline:#EAD8BE;
+    --card:#FFFEFB;
+    --gold:#B07F2E;
+    --mild:#C64B68;
+    --mild-deep:#A23752;
+    --bold:#BE5A2B;
+    --bold-deep:#96431D;
+    --wild:#6C4E85;
+    --wild-deep:#523A66;
+    --accent: var(--mild);
+    --accent-deep: var(--mild-deep);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 12% 8%, var(--paper-deep) 0%, transparent 42%),
+      radial-gradient(circle at 92% 18%, var(--paper-deep) 0%, transparent 38%);
+    color:var(--ink);
+    font-family:'Karla', ui-sans-serif, system-ui, sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{ background:var(--accent); color:#fff; }
+  [data-cat="bold"]{ --accent: var(--bold); --accent-deep: var(--bold-deep); }
+  [data-cat="wild"]{ --accent: var(--wild); --accent-deep: var(--wild-deep); }
+
+  .build-tag{
+    position:fixed; top:8px; right:10px;
+    font-family:'Karla', sans-serif; font-size:10px; font-weight:700;
+    letter-spacing:0.03em; color:var(--gold);
+    background:var(--card); border:1px solid var(--hairline);
+    padding:3px 8px; border-radius:99px; z-index:30; opacity:0.85;
+  }
+  .back-link{
+    position:fixed; top:8px; left:10px;
+    display:flex; align-items:center; gap:5px;
+    font-family:'Karla', sans-serif; font-size:11.5px; font-weight:700;
+    letter-spacing:0.02em; color:var(--ink); text-decoration:none;
+    background:var(--card); border:1px solid var(--hairline);
+    padding:5px 10px 5px 8px; border-radius:99px; z-index:30;
+  }
+  .back-link svg{ width:12px; height:12px; }
+
+  .stage{
+    max-width:560px; margin:0 auto; min-height:100vh;
+    display:flex; flex-direction:column; align-items:center; padding:0 20px 30px;
+  }
+
+  header{ text-align:center; padding:38px 4px 8px; flex-shrink:0; }
+  .monogram{
+    width:52px; height:52px; margin:0 auto 14px; border-radius:50%;
+    border:1.5px solid var(--hairline); display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces', serif; font-style:italic; font-weight:500; font-size:22px;
+    color:var(--gold); background:var(--card);
+  }
+  h1{
+    margin:0; font-family:'Fraunces', serif; font-style:italic; font-weight:500;
+    font-size:clamp(24px, 6vw, 30px); line-height:1.1; letter-spacing:-0.01em;
+    text-wrap:balance; color:var(--ink); text-align:center;
+  }
+  .kicker{
+    font-family:'Karla', sans-serif; font-weight:700; font-size:11px;
+    letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); margin:0 0 12px; text-align:center;
+  }
+  header p.sub{ color:var(--muted); font-size:14.5px; max-width:32ch; margin:10px auto 0; line-height:1.5; }
+
+  .legend{ display:flex; gap:14px; justify-content:center; margin:18px 0 4px; flex-wrap:wrap; }
+  .legend span{ display:flex; align-items:center; gap:6px; font-size:11.5px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
+  .legend i{ width:9px; height:9px; border-radius:50%; display:inline-block; }
+  .legend .dot-mild{ background:var(--mild); }
+  .legend .dot-bold{ background:var(--bold); }
+  .legend .dot-wild{ background:var(--wild); }
+
+  .wheel-shell{ position:relative; width:min(280px, 78vw); height:min(280px, 78vw); margin:22px auto 8px; flex-shrink:0; }
+  .pointer{
+    position:absolute; top:-8px; left:50%; transform:translateX(-50%);
+    width:0; height:0; z-index:5;
+    border-left:11px solid transparent; border-right:11px solid transparent;
+    border-top:18px solid var(--ink);
+    filter:drop-shadow(0 2px 2px rgba(0,0,0,0.15));
+  }
+  .wheel{
+    width:100%; height:100%; border-radius:50%; position:relative;
+    border:7px solid var(--card);
+    box-shadow: 0 0 0 1.5px var(--hairline), 0 14px 30px -14px rgba(58,36,54,0.4);
+    transition: transform 3.6s cubic-bezier(.11,.7,.1,1);
+    background: conic-gradient(from 0deg,
+      var(--mild) 0deg 60deg, var(--bold) 60deg 120deg, var(--wild) 120deg 180deg,
+      var(--mild) 180deg 240deg, var(--bold) 240deg 300deg, var(--wild) 300deg 360deg);
+  }
+  .wheel-label{
+    position:absolute; top:50%; left:50%; width:60px; margin-left:-30px;
+    text-align:center; font-family:'Karla', sans-serif; font-weight:700; font-size:12px;
+    letter-spacing:0.08em; text-transform:uppercase; color:#fff;
+    text-shadow:0 1px 2px rgba(0,0,0,0.25);
+  }
+  .wheel-hub{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:44px; height:44px; border-radius:50%; background:var(--card);
+    border:1.5px solid var(--hairline); display:flex; align-items:center; justify-content:center;
+    font-size:18px; z-index:4;
+  }
+
+  button.spinbtn{
+    margin-top:10px;
+    border:none; border-radius:14px; padding:16px 34px;
+    background:var(--ink); color:var(--paper);
+    font-family:'Karla', sans-serif; font-weight:700; font-size:15.5px;
+    cursor:pointer; transition:opacity .15s ease, transform .1s ease;
+  }
+  button.spinbtn:active{ transform:scale(0.97); }
+  button.spinbtn[disabled]{ opacity:0.5; cursor:default; }
+
+  .result{
+    width:100%; margin-top:22px;
+    background:var(--card); border:1px solid var(--hairline); border-radius:20px;
+    padding:26px 24px; text-align:center; display:none; animation:rise .32s ease;
+  }
+  .result.is-visible{ display:block; }
+  @keyframes rise{ from{ opacity:0; transform:translateY(10px);} to{ opacity:1; transform:translateY(0);} }
+  .result .cat-chip{
+    display:inline-block; font-family:'Karla', sans-serif; font-weight:700; font-size:10.5px;
+    letter-spacing:0.12em; text-transform:uppercase; color:var(--accent-deep);
+    background:var(--paper-deep); padding:4px 14px; border-radius:99px; margin-bottom:16px;
+    transition:color .3s ease;
+  }
+  .result p.dare{
+    margin:0; font-family:'Fraunces', serif; font-weight:500; font-size:clamp(19px, 5vw, 23px);
+    line-height:1.4; text-wrap:balance; color:var(--ink);
+  }
+
+  footer.credit{ text-align:center; color:var(--muted); font-family:'Fraunces', serif; font-style:italic; font-size:13.5px; padding-top:26px; flex-shrink:0; }
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+  <div class="build-tag">v8 &middot; Sep 8</div>
+  <a class="back-link" href="index.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 18l-6-6 6-6"/></svg>
+    All games
+  </a>
+  <header>
+    <div class="monogram">🎡</div>
+    <p class="kicker">Bachelorette &middot; Spin The Wheel</p>
+    <h1>Spin for a dare</h1>
+    <p class="sub">Give the bride (or anyone brave enough) a spin. The wheel picks the category, we pick the dare.</p>
+  </header>
+
+  <div class="legend">
+    <span><i class="dot-mild"></i>Mild</span>
+    <span><i class="dot-bold"></i>Bold</span>
+    <span><i class="dot-wild"></i>Wild</span>
+  </div>
+
+  <div class="wheel-shell">
+    <div class="pointer"></div>
+    <div class="wheel" id="wheel">
+      <span class="wheel-label" style="transform:rotate(30deg) translateY(-96px);">Mild</span>
+      <span class="wheel-label" style="transform:rotate(90deg) translateY(-96px);">Bold</span>
+      <span class="wheel-label" style="transform:rotate(150deg) translateY(-96px);">Wild</span>
+      <span class="wheel-label" style="transform:rotate(210deg) translateY(-96px);">Mild</span>
+      <span class="wheel-label" style="transform:rotate(270deg) translateY(-96px);">Bold</span>
+      <span class="wheel-label" style="transform:rotate(330deg) translateY(-96px);">Wild</span>
+    </div>
+    <div class="wheel-hub">🎡</div>
+  </div>
+
+  <button class="spinbtn" id="btn-spin">Spin the wheel</button>
+
+  <div class="result" id="result">
+    <span class="cat-chip" id="cat-chip">Mild</span>
+    <p class="dare" id="dare-text"></p>
+  </div>
+
+  <footer class="credit">With love, for Disha's big night</footer>
+</div>
+
+<script>
+const DARES = {
+  mild: [
+    "Do your best runway walk across the room.",
+    "Give a toast to the bride — no notes allowed.",
+    "Let the group pick your drink order for the next round.",
+    "Do an impression of the bride's laugh.",
+    "Take a selfie with a stranger and get their name.",
+    "Sing the chorus of your go-to karaoke song, right now.",
+    "Tell the group your most embarrassing childhood nickname.",
+    "Do ten seconds of your best wedding dance move."
+  ],
+  bold: [
+    "Ask a stranger to rate the bride's outfit out of 10.",
+    "Swap one item of clothing with someone at the table.",
+    "Let the bride draw on your hand with a pen — no peeking until she's done.",
+    "Do your best impression of the bride and groom's wedding vows.",
+    "Recreate your most awkward date story as a 30-second skit.",
+    "Let the group post one photo of their choice to your story.",
+    "Ask the nearest table to send over a round — your choice how.",
+    "Confess your worst text-and-regret story."
+  ],
+  wild: [
+    "Get a stranger's number for the bride — for a friend, obviously.",
+    "Down your drink, no hands.",
+    "Let the group choose your next dare, sight unseen.",
+    "Do a dramatic reading of the bride's most cringe old post.",
+    "Swap shoes with the bride for one photo.",
+    "Get down on one knee and propose to a stranger, bachelorette-style.",
+    "Let the bride pick your nickname for the rest of the night.",
+    "Take a shot for every ex the group can name in 30 seconds."
+  ]
+};
+
+const SEGMENTS = ["mild","bold","wild","mild","bold","wild"];
+const CAT_LABEL = { mild:"Mild", bold:"Bold", wild:"Wild" };
+
+const wheel = document.getElementById("wheel");
+const spinBtn = document.getElementById("btn-spin");
+const result = document.getElementById("result");
+const catChip = document.getElementById("cat-chip");
+const dareText = document.getElementById("dare-text");
+const stage = document.getElementById("stage");
+
+let rot = 0;
+let spinning = false;
+
+function pickDare(cat){
+  const list = DARES[cat];
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+spinBtn.addEventListener("click", () => {
+  if(spinning) return;
+  spinning = true;
+  spinBtn.disabled = true;
+  result.classList.remove("is-visible");
+
+  const segIdx = Math.floor(Math.random() * SEGMENTS.length);
+  const cat = SEGMENTS[segIdx];
+  const theta = segIdx * 60 + 30;
+
+  const target = (360 - theta + 360) % 360;
+  const currentMod = ((rot % 360) + 360) % 360;
+  let delta = target - currentMod;
+  if(delta <= 0) delta += 360;
+  const extraTurns = 4 + Math.floor(Math.random() * 2);
+  rot += delta + extraTurns * 360;
+  wheel.style.transform = `rotate(${rot}deg)`;
+
+  const onDone = () => {
+    wheel.removeEventListener("transitionend", onDone);
+    spinning = false;
+    spinBtn.disabled = false;
+    stage.dataset.cat = cat;
+    catChip.textContent = CAT_LABEL[cat];
+    dareText.textContent = pickDare(cat);
+    result.classList.add("is-visible");
+  };
+  wheel.addEventListener("transitionend", onDone);
+});
+</script>
+
+</body>
+</html>

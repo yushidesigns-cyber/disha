@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bride Bingo — Disha's Bachelorette</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✅</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500;1,9..144,600&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBF3E9;
+    --paper-deep:#F5E9D8;
+    --ink:#3A2436;
+    --muted:#8C7268;
+    --hairline:#EAD8BE;
+    --card:#FFFEFB;
+    --gold:#B07F2E;
+    --wild:#6C4E85;
+    --wild-deep:#523A66;
+    --accent: var(--wild);
+    --accent-deep: var(--wild-deep);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 12% 8%, var(--paper-deep) 0%, transparent 42%),
+      radial-gradient(circle at 92% 18%, var(--paper-deep) 0%, transparent 38%);
+    color:var(--ink);
+    font-family:'Karla', ui-sans-serif, system-ui, sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{ background:var(--accent); color:#fff; }
+
+  .build-tag{
+    position:fixed; top:8px; right:10px;
+    font-family:'Karla', sans-serif; font-size:10px; font-weight:700;
+    letter-spacing:0.03em; color:var(--gold);
+    background:var(--card); border:1px solid var(--hairline);
+    padding:3px 8px; border-radius:99px; z-index:30; opacity:0.85;
+  }
+  .back-link{
+    position:fixed; top:8px; left:10px;
+    display:flex; align-items:center; gap:5px;
+    font-family:'Karla', sans-serif; font-size:11.5px; font-weight:700;
+    letter-spacing:0.02em; color:var(--ink); text-decoration:none;
+    background:var(--card); border:1px solid var(--hairline);
+    padding:5px 10px 5px 8px; border-radius:99px; z-index:30;
+  }
+  .back-link svg{ width:12px; height:12px; }
+
+  .stage{
+    max-width:560px; margin:0 auto; min-height:100vh;
+    display:flex; flex-direction:column; padding:0 16px 26px;
+  }
+
+  header{ text-align:center; padding:38px 4px 16px; flex-shrink:0; }
+  .monogram{
+    width:52px; height:52px; margin:0 auto 14px; border-radius:50%;
+    border:1.5px solid var(--hairline); display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces', serif; font-style:italic; font-weight:500; font-size:22px;
+    color:var(--gold); background:var(--card);
+  }
+  h1{
+    margin:0; font-family:'Fraunces', serif; font-style:italic; font-weight:500;
+    font-size:clamp(24px, 6vw, 30px); line-height:1.1; letter-spacing:-0.01em;
+    text-wrap:balance; color:var(--ink);
+  }
+  h1 em{ color:var(--accent-deep); }
+  .kicker{
+    font-family:'Karla', sans-serif; font-weight:700; font-size:11px;
+    letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); margin:0 0 12px;
+  }
+  header p.sub{ color:var(--muted); font-size:14.5px; max-width:34ch; margin:8px auto 0; line-height:1.5; }
+
+  .banner{
+    display:none;
+    text-align:center;
+    background:var(--accent-deep); color:#fff;
+    border-radius:16px; padding:14px 18px; margin-bottom:14px;
+    font-family:'Fraunces', serif; font-style:italic; font-weight:500; font-size:19px;
+    animation:pop .35s ease;
+  }
+  .banner.is-visible{ display:block; }
+  @keyframes pop{ from{ opacity:0; transform:scale(0.92);} to{ opacity:1; transform:scale(1);} }
+
+  .grid{
+    flex:1;
+    display:grid;
+    grid-template-columns:repeat(5, minmax(0, 1fr));
+    gap:6px;
+    align-content:start;
+  }
+  .cell{
+    position:relative;
+    min-width:0;
+    aspect-ratio:1;
+    border:1px solid var(--hairline);
+    background:var(--card);
+    border-radius:9px;
+    display:flex; align-items:center; justify-content:center;
+    text-align:center;
+    padding:5px;
+    font-size:10.5px;
+    line-height:1.25;
+    font-weight:600;
+    color:var(--ink);
+    cursor:pointer;
+    user-select:none;
+    overflow-wrap:break-word;
+    transition:background .15s ease, border-color .15s ease, transform .1s ease, color .15s ease;
+  }
+  .cell:active{ transform:scale(0.95); }
+  .cell.is-free{
+    font-family:'Fraunces', serif; font-style:italic; font-weight:500; font-size:13px;
+    color:var(--accent-deep); background:var(--paper-deep); border-color:var(--hairline);
+  }
+  .cell.is-marked{
+    background:var(--accent-deep); border-color:var(--accent-deep); color:#fff;
+  }
+  .cell.is-marked.is-free{ color:#fff; }
+  .cell.is-winning{
+    box-shadow:0 0 0 2px var(--gold) inset;
+  }
+
+  .actions{
+    display:flex; gap:10px; padding-top:16px; flex-shrink:0;
+  }
+  button.actbtn{
+    flex:1;
+    border:1.5px solid var(--hairline); background:var(--card); color:var(--ink);
+    font-family:'Karla', sans-serif; font-weight:700; font-size:14px; border-radius:12px;
+    padding:13px 16px; cursor:pointer; transition:opacity .15s ease, transform .1s ease;
+  }
+  button.actbtn:active{ transform:scale(0.97); }
+  button.actbtn.primary{ background:var(--accent-deep); border-color:var(--accent-deep); color:#fff; }
+
+  footer.credit{ text-align:center; color:var(--muted); font-family:'Fraunces', serif; font-style:italic; font-size:13.5px; padding-top:18px; flex-shrink:0; }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="build-tag">v8 &middot; Sep 8</div>
+  <a class="back-link" href="index.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 18l-6-6 6-6"/></svg>
+    All games
+  </a>
+  <header>
+    <div class="monogram">✅</div>
+    <p class="kicker">Bachelorette &middot; Party Bingo</p>
+    <h1>Bride <em>Bingo</em></h1>
+    <p class="sub">Tap a square the moment it happens. Five in a row — across, down, or diagonal — wins.</p>
+  </header>
+
+  <div class="banner" id="banner">🎉 Bingo!</div>
+
+  <main class="grid" id="grid"></main>
+
+  <div class="actions">
+    <button class="actbtn" id="btn-clear">Clear card</button>
+    <button class="actbtn primary" id="btn-new">New card</button>
+  </div>
+
+  <footer class="credit">With love, for Disha's big night</footer>
+</div>
+
+<script>
+const ITEMS = [
+  "Bride cries happy tears",
+  "Someone brings up an ex",
+  "A stranger buys a round",
+  "Bride loses a game",
+  "Someone takes a shot",
+  "A group photo happens",
+  "A stranger says something nice",
+  "A phone dies",
+  "A toast is given",
+  "Bride spills a drink",
+  "A dance battle breaks out",
+  "A song from high school plays",
+  "Someone mentions the date",
+  "Bride wears the sash all night",
+  "The group takes a wrong turn",
+  "Someone says \"can't believe it!\"",
+  "A selfie with a total stranger",
+  "Someone asks who the groom is",
+  "Someone loses their phone",
+  "A dare gets done",
+  "Someone orders the wrong drink",
+  "Bride gives a surprise speech",
+  "The driver hears the story",
+  "Someone brings up the bachelor party",
+  "The group sings karaoke",
+  "Bride forgets a name",
+  "A guest cries (not the bride)",
+  "A stranger joins the group photo",
+  "Someone says \"one more drink\"",
+  "Bride shouts \"I'm getting married!\""
+];
+
+function shuffled(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const LINES = [];
+for(let r = 0; r < 5; r++) LINES.push([0,1,2,3,4].map(c => r*5 + c));
+for(let c = 0; c < 5; c++) LINES.push([0,1,2,3,4].map(r => r*5 + c));
+LINES.push([0,6,12,18,24]);
+LINES.push([4,8,12,16,20]);
+
+const grid = document.getElementById("grid");
+const banner = document.getElementById("banner");
+let marked = new Set([12]);
+let cellEls = [];
+
+function buildCard(){
+  grid.innerHTML = "";
+  banner.classList.remove("is-visible");
+  marked = new Set([12]);
+  const words = shuffled(ITEMS).slice(0, 24);
+  words.splice(12, 0, "FREE");
+
+  cellEls = words.map((text, i) => {
+    const cell = document.createElement("div");
+    cell.className = "cell" + (i === 12 ? " is-free is-marked" : "");
+    cell.textContent = text;
+    cell.dataset.index = i;
+    if(i !== 12){
+      cell.addEventListener("click", () => toggleCell(i));
+    }
+    grid.appendChild(cell);
+    return cell;
+  });
+  checkWin();
+}
+
+function toggleCell(i){
+  if(marked.has(i)) marked.delete(i); else marked.add(i);
+  cellEls[i].classList.toggle("is-marked", marked.has(i));
+  checkWin();
+}
+
+function checkWin(){
+  cellEls.forEach(el => el.classList.remove("is-winning"));
+  const winLine = LINES.find(line => line.every(i => marked.has(i)));
+  if(winLine){
+    winLine.forEach(i => cellEls[i].classList.add("is-winning"));
+    banner.classList.add("is-visible");
+  } else {
+    banner.classList.remove("is-visible");
+  }
+}
+
+document.getElementById("btn-new").addEventListener("click", buildCard);
+document.getElementById("btn-clear").addEventListener("click", () => {
+  marked = new Set([12]);
+  cellEls.forEach((el, i) => el.classList.toggle("is-marked", i === 12));
+  checkWin();
+});
+
+buildCard();
+</script>
+
+</body>
+</html>

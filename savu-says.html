@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>What Did Savu Say? — Disha's Bachelorette</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💍</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500;1,9..144,600&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBF3E9;
+    --paper-deep:#F5E9D8;
+    --ink:#3A2436;
+    --muted:#8C7268;
+    --hairline:#EAD8BE;
+    --card:#FFFEFB;
+    --rose:#C64B68;
+    --rose-deep:#A23752;
+    --gold:#B07F2E;
+    --spicy:#BE5A2B;
+    --spicy-deep:#96431D;
+    --wild:#6C4E85;
+    --wild-deep:#523A66;
+    --accent: var(--rose);
+    --accent-deep: var(--rose-deep);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 12% 8%, var(--paper-deep) 0%, transparent 42%),
+      radial-gradient(circle at 92% 18%, var(--paper-deep) 0%, transparent 38%);
+    color:var(--ink);
+    font-family:'Karla', ui-sans-serif, system-ui, sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{ background:var(--accent); color:#fff; }
+  [data-round="spicy"]{ --accent: var(--spicy); --accent-deep: var(--spicy-deep); }
+  [data-round="wild"]{ --accent: var(--wild); --accent-deep: var(--wild-deep); }
+
+  .build-tag{
+    position:fixed;
+    top:8px; right:10px;
+    font-family:'Karla', sans-serif;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:0.03em;
+    color:var(--gold);
+    background:var(--card);
+    border:1px solid var(--hairline);
+    padding:3px 8px;
+    border-radius:99px;
+    z-index:30;
+    opacity:0.85;
+  }
+  .back-link{
+    position:fixed;
+    top:8px; left:10px;
+    display:flex; align-items:center; gap:5px;
+    font-family:'Karla', sans-serif;
+    font-size:11.5px;
+    font-weight:700;
+    letter-spacing:0.02em;
+    color:var(--ink);
+    text-decoration:none;
+    background:var(--card);
+    border:1px solid var(--hairline);
+    padding:5px 10px 5px 8px;
+    border-radius:99px;
+    z-index:30;
+  }
+  .back-link svg{ width:12px; height:12px; }
+
+  .stage{
+    max-width:560px;
+    margin:0 auto;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    padding:0 20px 22px;
+  }
+
+  header{
+    text-align:center;
+    padding:38px 4px 18px;
+    flex-shrink:0;
+  }
+  .monogram{
+    width:52px; height:52px;
+    margin:0 auto 14px;
+    border-radius:50%;
+    border:1.5px solid var(--hairline);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:18px;
+    color:var(--gold);
+    background:var(--card);
+  }
+  h1{
+    margin:0;
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:clamp(24px, 6vw, 30px);
+    line-height:1.1;
+    letter-spacing:-0.01em;
+    text-wrap:balance;
+    color:var(--ink);
+  }
+  h1 em{ color:var(--accent-deep); transition:color .3s ease; }
+  .kicker{
+    font-family:'Karla', sans-serif;
+    font-weight:700;
+    font-size:11px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin:0 0 12px;
+  }
+
+  .track-wrap{
+    flex-shrink:0;
+    padding:2px 2px 6px;
+  }
+  .track{
+    height:4px;
+    background:var(--hairline);
+    border-radius:99px;
+    overflow:hidden;
+  }
+  .track > i{
+    display:block; height:100%;
+    background:var(--accent-deep);
+    transition:width .3s ease, background .3s ease;
+    border-radius:99px;
+  }
+  .track-label{
+    display:flex; justify-content:space-between;
+    font-size:11.5px;
+    color:var(--muted);
+    margin-top:7px;
+    font-variant-numeric:tabular-nums;
+  }
+  .round-chip{
+    font-weight:700;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    font-size:10.5px;
+    color:var(--accent-deep);
+    transition:color .3s ease;
+  }
+
+  main.deck{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    padding:14px 0;
+  }
+
+  .slide{
+    width:100%;
+    display:none;
+    animation:rise .32s ease;
+  }
+  .slide.is-active{ display:block; }
+  @keyframes rise{ from{ opacity:0; transform:translateY(10px);} to{ opacity:1; transform:translateY(0);} }
+
+  /* question slide */
+  .qcard{
+    background:var(--card);
+    border:1px solid var(--hairline);
+    border-radius:20px;
+    padding:34px 26px 28px;
+    text-align:center;
+  }
+  .qnum{
+    display:inline-block;
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:14px;
+    color:var(--accent-deep);
+    background:var(--paper-deep);
+    padding:4px 14px;
+    border-radius:99px;
+    margin-bottom:18px;
+    transition:color .3s ease;
+  }
+  .qtext{
+    margin:0 0 26px;
+    font-size:clamp(20px, 5vw, 25px);
+    line-height:1.4;
+    font-weight:600;
+    letter-spacing:-0.005em;
+    text-wrap:balance;
+  }
+
+  button.play{
+    display:flex; align-items:center; gap:11px;
+    width:100%;
+    border:none;
+    border-radius:12px;
+    padding:15px 18px;
+    background:var(--paper-deep);
+    color:var(--ink);
+    font-family:'Karla', sans-serif;
+    font-weight:700;
+    font-size:15px;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease;
+  }
+  button.play .dot{
+    width:32px; height:32px; flex-shrink:0;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--accent);
+    color:#fff;
+    transition:background .3s ease;
+  }
+  button.play .dot svg{ width:13px; height:13px; }
+  button.play .label{ flex:1; text-align:left; }
+  button.play .time{
+    font-variant-numeric:tabular-nums;
+    font-size:12.5px;
+    color:var(--muted);
+  }
+  button.play.is-playing{ background:var(--ink); color:var(--paper); }
+  button.play.is-playing .time{ color:var(--paper); opacity:0.72; }
+  button.play.is-playing .dot{ background:var(--paper); color:var(--ink); }
+
+  .bar{
+    height:3px; background:var(--hairline);
+    border-radius:99px; margin-top:14px; overflow:hidden;
+  }
+  .bar > i{
+    display:block; height:100%; width:0%;
+    background:var(--accent);
+    transition:background .3s ease;
+  }
+
+  /* divider slide */
+  .divider{
+    text-align:center;
+    padding:20px 10px;
+  }
+  .divider .rule{
+    width:34px; height:1.5px; background:var(--hairline);
+    margin:0 auto 22px;
+  }
+  .divider .eyebrow{
+    font-family:'Karla', sans-serif;
+    font-weight:700;
+    font-size:11.5px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--accent-deep);
+    margin:0 0 10px;
+  }
+  .divider h2{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:clamp(30px,7vw,40px);
+    margin:0 0 12px;
+    color:var(--ink);
+  }
+  .divider p{
+    color:var(--muted);
+    font-size:15.5px;
+    margin:0 auto;
+    max-width:36ch;
+    line-height:1.5;
+  }
+
+  /* end slide */
+  .endcard{ text-align:center; padding:20px 10px; }
+  .endcard .rule{ width:34px; height:1.5px; background:var(--hairline); margin:0 auto 22px; }
+  .endcard h2{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:clamp(28px,6vw,36px);
+    margin:0 0 14px;
+    color:var(--ink);
+  }
+  .endcard p{ color:var(--muted); font-size:15.5px; max-width:34ch; margin:0 auto 22px; line-height:1.5; }
+
+  nav.controls{
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding-top:8px;
+  }
+  .navbtn{
+    border:1.5px solid var(--hairline);
+    background:var(--card);
+    color:var(--ink);
+    font-family:'Karla', sans-serif;
+    font-weight:700;
+    font-size:14px;
+    border-radius:12px;
+    padding:13px 18px;
+    cursor:pointer;
+    display:flex; align-items:center; gap:6px;
+    transition:opacity .15s ease, transform .1s ease;
+  }
+  .navbtn:active{ transform:scale(0.97); }
+  .navbtn[disabled]{ opacity:0.35; cursor:default; }
+  .navbtn svg{ width:15px; height:15px; }
+  .navbtn.next{
+    flex:1;
+    justify-content:center;
+    background:var(--accent-deep);
+    border-color:var(--accent-deep);
+    color:#fff;
+    transition:opacity .15s ease, transform .1s ease, background .3s ease, border-color .3s ease;
+  }
+  .navbtn.prev{ flex-shrink:0; }
+
+  footer.credit{
+    text-align:center;
+    color:var(--muted);
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:13.5px;
+    padding-top:16px;
+    flex-shrink:0;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .slide{ animation:none; }
+  }
+</style>
+
+
+</head>
+<body>
+
+<div class="stage" id="stage">
+  <div class="build-tag">v8 &middot; Sep 8 (game hub)</div>
+  <a class="back-link" href="index.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 18l-6-6 6-6"/></svg>
+    All games
+  </a>
+  <header>
+    <div class="monogram">D&amp;S</div>
+    <p class="kicker">Bachelorette &middot; Groom's Tell-All</p>
+    <h1>What did <em id="savu-em">Savu</em> really say?</h1>
+  </header>
+
+  <div class="track-wrap">
+    <div class="track"><i id="track-fill"></i></div>
+    <div class="track-label">
+      <span class="round-chip" id="round-chip">Regular</span>
+      <span id="progress-text">Question 1 of 32</span>
+    </div>
+  </div>
+
+  <main class="deck" id="deck"></main>
+
+  <nav class="controls">
+    <button class="navbtn prev" id="btn-prev" disabled aria-label="Previous">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button class="navbtn next" id="btn-next">
+      <span id="next-label">Start guessing</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </nav>
+
+  <footer class="credit">With love, for Disha's big night</footer>
+</div>
+
+<script>
+const ROUNDS = {"regular": [{"q": "Who said \"I love you\" first?", "src": "audio/regular-01.mp3"}, {"q": "Who's more likely to start an argument over food?", "src": "audio/regular-02.mp3"}, {"q": "What's your Disha signature \"I'm mad\" face?", "src": "audio/regular-03.mp3"}, {"q": "Who's the bigger cuddler?", "src": "audio/regular-04.mp3"}, {"q": "What's the weirdest pet name you've ever used? Disha's for you and yours for Disha", "src": "audio/regular-05.mp3"}, {"q": "Who's more likely to fall asleep mid-conversation?", "src": "audio/regular-06.mp3"}, {"q": "If your relationship had a theme song, what would it be?", "src": "audio/regular-07.mp3"}, {"q": "Who gives the better gifts?", "src": "audio/regular-08.mp3"}, {"q": "Who's more dramatic in a crisis?", "src": "audio/regular-09.mp3"}, {"q": "Who laughs at their own jokes the most?", "src": "audio/regular-10.mp3"}, {"q": "Who's the better chef?", "src": "audio/regular-11.mp3"}, {"q": "Who's most likely to forget what day it is?", "src": "audio/regular-12.mp3"}, {"q": "Who can't stay mad for more than ten minutes?", "src": "audio/regular-13.mp3"}, {"q": "Who's more addicted to selfies?", "src": "audio/regular-14.mp3"}, {"q": "What's your love story in three emojis?", "src": "audio/regular-15.mp3"}, {"q": "Who's more likely to text first after a fight?", "src": "audio/regular-16.mp3"}], "spicy": [{"q": "Who's more adventurous in bed?", "src": "audio/spicy-01.mp3"}, {"q": "Who initiated the first kiss?", "src": "audio/spicy-02.mp3"}, {"q": "Who's more jealous?", "src": "audio/spicy-03.mp3"}, {"q": "What's Disha's most annoying habit?", "src": "audio/spicy-04.mp3"}, {"q": "What's the weirdest place you've been intimate?", "src": "audio/spicy-05.mp3"}, {"q": "Who's more likely to send a risky text to the wrong person?", "src": "audio/spicy-06.mp3"}], "wild": [{"q": "If Disha were in a reality TV show, which character would she be?", "src": "audio/wild-01.mp3"}, {"q": "What would Disha be arrested for?", "src": "audio/wild-02.mp3"}, {"q": "What's Disha's most unhinged behaviour?", "src": "audio/wild-03.mp3"}, {"q": "If Disha could ditch the wedding for one celebrity, who?", "src": "audio/wild-04.mp3"}, {"q": "What's the most embarrassing thing Disha's done in front of you?", "src": "audio/wild-05.mp3"}, {"q": "What's Disha's biggest red flag you've ignored?", "src": "audio/wild-06.mp3"}, {"q": "If your relationship was a movie, what would it be called?", "src": "audio/wild-07.mp3"}, {"q": "Who's more likely to accidentally start a fire?", "src": "audio/wild-08.mp3"}, {"q": "What's the most ridiculous argument you've had?", "src": "audio/wild-09.mp3"}, {"q": "What will Disha be doing at 80 that will embarrass your grandkids?", "src": "audio/wild-10.mp3"}]};
+
+const ROUND_META = {
+  regular: { label:"Regular", eyebrow:"Round One", title:"Regular", note:"Sweet & simple — the warm-up round. He answered first; now it's Disha's turn to guess." },
+  spicy:   { label:"Spicy",   eyebrow:"Round Two", title:"Spicy",   note:"Turning up the heat. Same rules — guess before you press play." },
+  wild:    { label:"Wild Cards", eyebrow:"Round Three", title:"Wild Cards", note:"Anything goes from here on out." }
+};
+
+const ICONS = {
+  play: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>',
+  pause: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>'
+};
+
+function fmt(t){
+  if(!isFinite(t)) return "0:00";
+  const m = Math.floor(t/60), s = Math.floor(t%60);
+  return m + ":" + String(s).padStart(2,"0");
+}
+
+// Build the flat slide sequence: divider, questions..., divider, questions..., divider, questions..., end
+const ORDER = ["regular","spicy","wild"];
+const slides = [];
+ORDER.forEach(round => {
+  slides.push({ type:"divider", round });
+  ROUNDS[round].forEach((item, i) => {
+    slides.push({ type:"question", round, index:i, total:ROUNDS[round].length, q:item.q, src:item.src });
+  });
+});
+slides.push({ type:"end" });
+
+const totalQuestions = ORDER.reduce((n, r) => n + ROUNDS[r].length, 0);
+
+let current = 0;
+
+// iOS Safari's media decoder degrades if you keep reloading a new .src into
+// the *same* <audio> element many times in a row (it plays a couple of clips
+// fine, then silently stops actually producing sound). The reliable pattern
+// on iOS is the opposite of the desktop-friendly one: create a brand new
+// Audio() for each play and let the previous one be garbage collected,
+// rather than reusing one element across all 32 clips.
+let active = { audio:null, btn:null, barFill:null, key:null, raf:null };
+
+function stopActive(){
+  if(active.audio){
+    active.audio.pause();
+    active.audio.src = "";
+  }
+  if(active.raf) cancelAnimationFrame(active.raf);
+  if(active.btn){
+    active.btn.classList.remove("is-playing");
+    active.btn.querySelector(".dot").innerHTML = ICONS.play;
+    active.btn.querySelector(".label").textContent = "What did Savu say?";
+  }
+  if(active.barFill) active.barFill.style.width = "0%";
+  active = { audio:null, btn:null, barFill:null, key:null, raf:null };
+}
+
+function questionsSeenThrough(slideIdx){
+  let n = 0;
+  for(let i=0;i<=slideIdx;i++){
+    if(slides[i].type === "question") n++;
+  }
+  return n;
+}
+
+function buildQuestionSlide(item){
+  const el = document.createElement("div");
+  el.className = "slide";
+  el.dataset.round = item.round;
+
+  const card = document.createElement("div");
+  card.className = "qcard";
+
+  const num = document.createElement("span");
+  num.className = "qnum";
+  num.textContent = `Q${item.index+1} / ${item.total}`;
+  card.appendChild(num);
+
+  const qtext = document.createElement("p");
+  qtext.className = "qtext";
+  qtext.textContent = item.q;
+  card.appendChild(qtext);
+
+  const btn = document.createElement("button");
+  btn.className = "play";
+  btn.innerHTML = `<span class="dot">${ICONS.play}</span><span class="label">What did Savu say?</span><span class="time"></span>`;
+  card.appendChild(btn);
+
+  const bar = document.createElement("div");
+  bar.className = "bar";
+  const barFill = document.createElement("i");
+  bar.appendChild(barFill);
+  card.appendChild(bar);
+
+  const key = `${item.round}-${item.index}`;
+
+  btn.addEventListener("click", () => {
+    if(active.key === key && active.audio && !active.audio.paused){ stopActive(); return; }
+    stopActive();
+
+    const audio = new Audio(item.src);
+    audio.setAttribute("playsinline", "");
+    audio.addEventListener("ended", () => { if(active.key === key) stopActive(); });
+    audio.addEventListener("error", () => {
+      if(active.key === key){
+        btn.querySelector(".label").textContent = "Couldn't play — tap to retry";
+        stopActive();
+      }
+    });
+
+    const playPromise = audio.play();
+    if(playPromise && playPromise.catch){
+      playPromise.catch(() => {
+        btn.querySelector(".label").textContent = "Couldn't play — tap to retry";
+      });
+    }
+    btn.classList.add("is-playing");
+    btn.querySelector(".dot").innerHTML = ICONS.pause;
+    btn.querySelector(".label").textContent = "Playing…";
+    active = { audio, btn, barFill, key, raf:null };
+    function tick(){
+      if(active.key !== key) return;
+      if(audio.duration){
+        barFill.style.width = (audio.currentTime/audio.duration*100) + "%";
+        btn.querySelector(".time").textContent = fmt(audio.currentTime) + " / " + fmt(audio.duration);
+      }
+      active.raf = requestAnimationFrame(tick);
+    }
+    tick();
+  });
+
+  el.appendChild(card);
+  return el;
+}
+
+function buildDividerSlide(round){
+  const meta = ROUND_META[round];
+  const el = document.createElement("div");
+  el.className = "slide";
+  el.dataset.round = round;
+  el.innerHTML = `
+    <div class="divider">
+      <div class="rule"></div>
+      <p class="eyebrow">${meta.eyebrow}</p>
+      <h2>${meta.title}</h2>
+      <p>${meta.note}</p>
+    </div>`;
+  return el;
+}
+
+function buildEndSlide(){
+  const el = document.createElement("div");
+  el.className = "slide";
+  el.innerHTML = `
+    <div class="endcard">
+      <div class="rule"></div>
+      <h2>That's everyone!</h2>
+      <p>32 questions, one groom, zero filter. Tally up the guesses and see who really knows Disha best.</p>
+    </div>`;
+  return el;
+}
+
+const deck = document.getElementById("deck");
+const slideEls = slides.map(s => {
+  if(s.type === "question") return buildQuestionSlide(s);
+  if(s.type === "divider") return buildDividerSlide(s.round);
+  return buildEndSlide();
+});
+slideEls.forEach(el => deck.appendChild(el));
+
+const trackFill = document.getElementById("track-fill");
+const roundChip = document.getElementById("round-chip");
+const progressText = document.getElementById("progress-text");
+const btnPrev = document.getElementById("btn-prev");
+const btnNext = document.getElementById("btn-next");
+const nextLabel = document.getElementById("next-label");
+const stage = document.getElementById("stage");
+
+function render(){
+  slideEls.forEach((el,i) => el.classList.toggle("is-active", i === current));
+  const slide = slides[current];
+  const round = slide.round || (slide.type === "end" ? "wild" : "regular");
+  stage.dataset.round = round;
+
+  if(slide.type === "question"){
+    const seen = questionsSeenThrough(current);
+    trackFill.style.width = (seen/totalQuestions*100) + "%";
+    roundChip.textContent = ROUND_META[slide.round].label;
+    progressText.textContent = `Question ${seen} of ${totalQuestions}`;
+  } else if(slide.type === "divider"){
+    const seen = questionsSeenThrough(current);
+    trackFill.style.width = (seen/totalQuestions*100) + "%";
+    roundChip.textContent = ROUND_META[slide.round].label;
+    progressText.textContent = `Question ${seen+1} of ${totalQuestions}`;
+  } else {
+    trackFill.style.width = "100%";
+    roundChip.textContent = "Finished";
+    progressText.textContent = `${totalQuestions} of ${totalQuestions}`;
+  }
+
+  btnPrev.disabled = current === 0;
+  if(current === 0){
+    nextLabel.textContent = "Start guessing";
+  } else if(current === slides.length - 1){
+    nextLabel.textContent = "Restart";
+  } else if(slide.type === "divider"){
+    nextLabel.textContent = "Begin round";
+  } else {
+    nextLabel.textContent = "Next question";
+  }
+}
+
+btnNext.addEventListener("click", () => {
+  stopActive();
+  if(current === slides.length - 1){
+    current = 0;
+  } else {
+    current++;
+  }
+  render();
+  window.scrollTo({top:0, behavior:"auto"});
+});
+
+btnPrev.addEventListener("click", () => {
+  if(current === 0) return;
+  stopActive();
+  current--;
+  render();
+  window.scrollTo({top:0, behavior:"auto"});
+});
+
+document.addEventListener("keydown", (e) => {
+  if(e.key === "ArrowRight") btnNext.click();
+  if(e.key === "ArrowLeft" && !btnPrev.disabled) btnPrev.click();
+});
+
+render();
+</script>
+
+
+</body>
+</html>

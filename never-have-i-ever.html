@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Never Have I Ever — Disha's Bachelorette</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥂</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500;1,9..144,600&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBF3E9;
+    --paper-deep:#F5E9D8;
+    --ink:#3A2436;
+    --muted:#8C7268;
+    --hairline:#EAD8BE;
+    --card:#FFFEFB;
+    --gold:#B07F2E;
+    --mint:#4C8C7A;
+    --mint-deep:#386A5C;
+    --spicy:#BE5A2B;
+    --spicy-deep:#96431D;
+    --wild:#6C4E85;
+    --wild-deep:#523A66;
+    --accent: var(--mint);
+    --accent-deep: var(--mint-deep);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 12% 8%, var(--paper-deep) 0%, transparent 42%),
+      radial-gradient(circle at 92% 18%, var(--paper-deep) 0%, transparent 38%);
+    color:var(--ink);
+    font-family:'Karla', ui-sans-serif, system-ui, sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{ background:var(--accent); color:#fff; }
+  [data-round="cheeky"]{ --accent: var(--spicy); --accent-deep: var(--spicy-deep); }
+  [data-round="wild"]{ --accent: var(--wild); --accent-deep: var(--wild-deep); }
+
+  .build-tag{
+    position:fixed; top:8px; right:10px;
+    font-family:'Karla', sans-serif; font-size:10px; font-weight:700;
+    letter-spacing:0.03em; color:var(--gold);
+    background:var(--card); border:1px solid var(--hairline);
+    padding:3px 8px; border-radius:99px; z-index:30; opacity:0.85;
+  }
+  .back-link{
+    position:fixed; top:8px; left:10px;
+    display:flex; align-items:center; gap:5px;
+    font-family:'Karla', sans-serif; font-size:11.5px; font-weight:700;
+    letter-spacing:0.02em; color:var(--ink); text-decoration:none;
+    background:var(--card); border:1px solid var(--hairline);
+    padding:5px 10px 5px 8px; border-radius:99px; z-index:30;
+  }
+  .back-link svg{ width:12px; height:12px; }
+
+  .stage{
+    max-width:560px; margin:0 auto; min-height:100vh;
+    display:flex; flex-direction:column; padding:0 20px 22px;
+  }
+
+  header{ text-align:center; padding:38px 4px 18px; flex-shrink:0; }
+  .monogram{
+    width:52px; height:52px; margin:0 auto 14px; border-radius:50%;
+    border:1.5px solid var(--hairline); display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces', serif; font-style:italic; font-weight:500; font-size:22px;
+    color:var(--gold); background:var(--card);
+  }
+  h1{
+    margin:0; font-family:'Fraunces', serif; font-style:italic; font-weight:500;
+    font-size:clamp(24px, 6vw, 30px); line-height:1.1; letter-spacing:-0.01em;
+    text-wrap:balance; color:var(--ink);
+  }
+  h1 em{ color:var(--accent-deep); transition:color .3s ease; }
+  .kicker{
+    font-family:'Karla', sans-serif; font-weight:700; font-size:11px;
+    letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); margin:0 0 12px;
+  }
+
+  .track-wrap{ flex-shrink:0; padding:2px 2px 6px; }
+  .track{ height:4px; background:var(--hairline); border-radius:99px; overflow:hidden; }
+  .track > i{ display:block; height:100%; background:var(--accent-deep); transition:width .3s ease, background .3s ease; border-radius:99px; }
+  .track-label{ display:flex; justify-content:space-between; font-size:11.5px; color:var(--muted); margin-top:7px; font-variant-numeric:tabular-nums; }
+  .round-chip{ font-weight:700; letter-spacing:0.04em; text-transform:uppercase; font-size:10.5px; color:var(--accent-deep); transition:color .3s ease; }
+
+  main.deck{ flex:1; display:flex; align-items:center; justify-content:center; position:relative; padding:14px 0; }
+  .slide{ width:100%; display:none; animation:rise .32s ease; }
+  .slide.is-active{ display:block; }
+  @keyframes rise{ from{ opacity:0; transform:translateY(10px);} to{ opacity:1; transform:translateY(0);} }
+
+  .qcard{ background:var(--card); border:1px solid var(--hairline); border-radius:20px; padding:38px 26px 32px; text-align:center; }
+  .qnum{
+    display:inline-block; font-family:'Fraunces', serif; font-style:italic; font-weight:500; font-size:14px;
+    color:var(--accent-deep); background:var(--paper-deep); padding:4px 14px; border-radius:99px;
+    margin-bottom:20px; transition:color .3s ease;
+  }
+  .qtext{
+    margin:0; font-family:'Fraunces', serif; font-weight:500; font-size:clamp(21px, 5.4vw, 27px);
+    line-height:1.35; letter-spacing:-0.005em; text-wrap:balance;
+  }
+  .qtext em{ font-style:italic; color:var(--accent-deep); transition:color .3s ease; }
+  .sip-hint{ margin:22px 0 0; font-size:13px; color:var(--muted); }
+
+  .divider{ text-align:center; padding:20px 10px; }
+  .divider .rule{ width:34px; height:1.5px; background:var(--hairline); margin:0 auto 22px; }
+  .divider .eyebrow{
+    font-family:'Karla', sans-serif; font-weight:700; font-size:11.5px; letter-spacing:0.18em;
+    text-transform:uppercase; color:var(--accent-deep); margin:0 0 10px;
+  }
+  .divider h2{ font-family:'Fraunces', serif; font-style:italic; font-weight:500; font-size:clamp(30px,7vw,40px); margin:0 0 12px; color:var(--ink); }
+  .divider p{ color:var(--muted); font-size:15.5px; margin:0 auto; max-width:36ch; line-height:1.5; }
+
+  .endcard{ text-align:center; padding:20px 10px; }
+  .endcard .rule{ width:34px; height:1.5px; background:var(--hairline); margin:0 auto 22px; }
+  .endcard h2{ font-family:'Fraunces', serif; font-style:italic; font-weight:500; font-size:clamp(28px,6vw,36px); margin:0 0 14px; color:var(--ink); }
+  .endcard p{ color:var(--muted); font-size:15.5px; max-width:34ch; margin:0 auto 22px; line-height:1.5; }
+
+  nav.controls{ flex-shrink:0; display:flex; align-items:center; gap:10px; padding-top:8px; }
+  .navbtn{
+    border:1.5px solid var(--hairline); background:var(--card); color:var(--ink);
+    font-family:'Karla', sans-serif; font-weight:700; font-size:14px; border-radius:12px;
+    padding:13px 18px; cursor:pointer; display:flex; align-items:center; gap:6px;
+    transition:opacity .15s ease, transform .1s ease;
+  }
+  .navbtn:active{ transform:scale(0.97); }
+  .navbtn[disabled]{ opacity:0.35; cursor:default; }
+  .navbtn svg{ width:15px; height:15px; }
+  .navbtn.next{
+    flex:1; justify-content:center; background:var(--accent-deep); border-color:var(--accent-deep); color:#fff;
+    transition:opacity .15s ease, transform .1s ease, background .3s ease, border-color .3s ease;
+  }
+  .navbtn.prev{ flex-shrink:0; }
+  .navbtn.shuffle{ flex-shrink:0; }
+
+  footer.credit{ text-align:center; color:var(--muted); font-family:'Fraunces', serif; font-style:italic; font-size:13.5px; padding-top:16px; flex-shrink:0; }
+
+  @media (prefers-reduced-motion: reduce){ .slide{ animation:none; } }
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+  <div class="build-tag">v8 &middot; Sep 8</div>
+  <a class="back-link" href="index.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 18l-6-6 6-6"/></svg>
+    All games
+  </a>
+  <header>
+    <div class="monogram">🥂</div>
+    <p class="kicker">Bachelorette &middot; Card Deck</p>
+    <h1>Never have I <em>ever</em>&hellip;</h1>
+  </header>
+
+  <div class="track-wrap">
+    <div class="track"><i id="track-fill"></i></div>
+    <div class="track-label">
+      <span class="round-chip" id="round-chip">Sweet</span>
+      <span id="progress-text">Card 1 of 26</span>
+    </div>
+  </div>
+
+  <main class="deck" id="deck"></main>
+
+  <nav class="controls">
+    <button class="navbtn prev" id="btn-prev" disabled aria-label="Previous">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button class="navbtn next" id="btn-next">
+      <span id="next-label">Start the round</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </nav>
+
+  <footer class="credit">If it's true for you&hellip; take a sip</footer>
+</div>
+
+<script>
+const ROUNDS = {
+  sweet: [
+    "Never have I ever cried during a rom-com.",
+    "Never have I ever stalked an ex on social media.",
+    "Never have I ever been the reason a party started late.",
+    "Never have I ever texted the wrong person by accident.",
+    "Never have I ever laughed so hard I cried in public.",
+    "Never have I ever forgotten a close friend's birthday.",
+    "Never have I ever pretended to like a gift I hated.",
+    "Never have I ever gone through with plans I regretted the next morning.",
+    "Never have I ever fallen asleep during a movie on a date.",
+    "Never have I ever sent a risky text to the wrong group chat."
+  ],
+  cheeky: [
+    "Never have I ever had a crush on a friend's partner.",
+    "Never have I ever been caught checking someone out.",
+    "Never have I ever ghosted someone after one date.",
+    "Never have I ever lied about my age to get into a club.",
+    "Never have I ever kissed someone on a first date.",
+    "Never have I ever had a one-night stand.",
+    "Never have I ever sent a flirty text I immediately regretted.",
+    "Never have I ever used a dating app while already talking to someone."
+  ],
+  wild: [
+    "Never have I ever done something illegal (however small) on a night out.",
+    "Never have I ever woken up somewhere with no idea how I got there.",
+    "Never have I ever been kicked out of a bar or club.",
+    "Never have I ever gotten a tattoo I regret.",
+    "Never have I ever thrown up from drinking too much.",
+    "Never have I ever gone home with someone whose name I didn't catch.",
+    "Never have I ever streaked or skinny-dipped.",
+    "Never have I ever talked my way out of trouble with a straight face."
+  ]
+};
+
+const ROUND_META = {
+  sweet:  { label:"Sweet",  eyebrow:"Round One",   title:"Sweet",  note:"Easing in. If it's true for you, take a sip — no judgment." },
+  cheeky: { label:"Cheeky", eyebrow:"Round Two",    title:"Cheeky", note:"Getting a little more honest now." },
+  wild:   { label:"Wild",   eyebrow:"Round Three",  title:"Wild",   note:"Last round. No holding back." }
+};
+
+const ORDER = ["sweet","cheeky","wild"];
+const slides = [];
+ORDER.forEach(round => {
+  slides.push({ type:"divider", round });
+  ROUNDS[round].forEach((text, i) => {
+    slides.push({ type:"card", round, index:i, total:ROUNDS[round].length, text });
+  });
+});
+slides.push({ type:"end" });
+
+const totalCards = ORDER.reduce((n, r) => n + ROUNDS[r].length, 0);
+let current = 0;
+
+function cardsSeenThrough(slideIdx){
+  let n = 0;
+  for(let i=0;i<=slideIdx;i++){ if(slides[i].type === "card") n++; }
+  return n;
+}
+
+function buildCardSlide(item){
+  const el = document.createElement("div");
+  el.className = "slide";
+  el.dataset.round = item.round;
+
+  const card = document.createElement("div");
+  card.className = "qcard";
+
+  const num = document.createElement("span");
+  num.className = "qnum";
+  num.textContent = `${item.index+1} / ${item.total}`;
+  card.appendChild(num);
+
+  const qtext = document.createElement("p");
+  qtext.className = "qtext";
+  qtext.innerHTML = item.text.replace(/^Never have I ever/, "Never have I <em>ever</em>");
+  card.appendChild(qtext);
+
+  const hint = document.createElement("p");
+  hint.className = "sip-hint";
+  hint.textContent = "True for you? Take a sip.";
+  card.appendChild(hint);
+
+  el.appendChild(card);
+  return el;
+}
+
+function buildDividerSlide(round){
+  const meta = ROUND_META[round];
+  const el = document.createElement("div");
+  el.className = "slide";
+  el.dataset.round = round;
+  el.innerHTML = `
+    <div class="divider">
+      <div class="rule"></div>
+      <p class="eyebrow">${meta.eyebrow}</p>
+      <h2>${meta.title}</h2>
+      <p>${meta.note}</p>
+    </div>`;
+  return el;
+}
+
+function buildEndSlide(){
+  const el = document.createElement("div");
+  el.className = "slide";
+  el.innerHTML = `
+    <div class="endcard">
+      <div class="rule"></div>
+      <h2>That's the deck!</h2>
+      <p>26 confessions, one very honest group. Go again, or on to the next game.</p>
+    </div>`;
+  return el;
+}
+
+const deck = document.getElementById("deck");
+const slideEls = slides.map(s => {
+  if(s.type === "card") return buildCardSlide(s);
+  if(s.type === "divider") return buildDividerSlide(s.round);
+  return buildEndSlide();
+});
+slideEls.forEach(el => deck.appendChild(el));
+
+const trackFill = document.getElementById("track-fill");
+const roundChip = document.getElementById("round-chip");
+const progressText = document.getElementById("progress-text");
+const btnPrev = document.getElementById("btn-prev");
+const btnNext = document.getElementById("btn-next");
+const nextLabel = document.getElementById("next-label");
+const stage = document.getElementById("stage");
+
+function render(){
+  slideEls.forEach((el,i) => el.classList.toggle("is-active", i === current));
+  const slide = slides[current];
+  const round = slide.round || (slide.type === "end" ? "wild" : "sweet");
+  stage.dataset.round = round;
+
+  if(slide.type === "card"){
+    const seen = cardsSeenThrough(current);
+    trackFill.style.width = (seen/totalCards*100) + "%";
+    roundChip.textContent = ROUND_META[slide.round].label;
+    progressText.textContent = `Card ${seen} of ${totalCards}`;
+  } else if(slide.type === "divider"){
+    const seen = cardsSeenThrough(current);
+    trackFill.style.width = (seen/totalCards*100) + "%";
+    roundChip.textContent = ROUND_META[slide.round].label;
+    progressText.textContent = `Card ${seen+1} of ${totalCards}`;
+  } else {
+    trackFill.style.width = "100%";
+    roundChip.textContent = "Finished";
+    progressText.textContent = `${totalCards} of ${totalCards}`;
+  }
+
+  btnPrev.disabled = current === 0;
+  if(current === 0){
+    nextLabel.textContent = "Start the round";
+  } else if(current === slides.length - 1){
+    nextLabel.textContent = "Play again";
+  } else if(slide.type === "divider"){
+    nextLabel.textContent = "Begin round";
+  } else {
+    nextLabel.textContent = "Next card";
+  }
+}
+
+btnNext.addEventListener("click", () => {
+  if(current === slides.length - 1){ current = 0; } else { current++; }
+  render();
+  window.scrollTo({top:0, behavior:"auto"});
+});
+
+btnPrev.addEventListener("click", () => {
+  if(current === 0) return;
+  current--;
+  render();
+  window.scrollTo({top:0, behavior:"auto"});
+});
+
+document.addEventListener("keydown", (e) => {
+  if(e.key === "ArrowRight") btnNext.click();
+  if(e.key === "ArrowLeft" && !btnPrev.disabled) btnPrev.click();
+});
+
+render();
+</script>
+
+</body>
+</html>
