@@ -146,7 +146,7 @@
 <body>
 
 <div class="stage">
-  <div class="build-tag">v8 &middot; Sep 8</div>
+  <div class="build-tag">v9 &middot; Sep 8 (saved card)</div>
   <a class="back-link" href="index.html">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 18l-6-6 6-6"/></svg>
     All games
@@ -224,16 +224,50 @@ const banner = document.getElementById("banner");
 let marked = new Set([12]);
 let cellEls = [];
 
-function buildCard(){
-  grid.innerHTML = "";
-  banner.classList.remove("is-visible");
-  marked = new Set([12]);
+const STORAGE_KEY = "disha-bride-bingo-card";
+
+function loadSavedCard(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return null;
+    const data = JSON.parse(raw);
+    if(!Array.isArray(data.words) || data.words.length !== 25) return null;
+    if(!Array.isArray(data.marked)) return null;
+    return data;
+  }catch(e){
+    return null;
+  }
+}
+
+function saveCard(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      words: cellEls.map(el => el.textContent),
+      marked: Array.from(marked)
+    }));
+  }catch(e){
+    // private browsing / storage disabled — the game still works, it just won't persist
+  }
+}
+
+function clearSavedCard(){
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){ /* ignore */ }
+}
+
+function generateWords(){
   const words = shuffled(ITEMS).slice(0, 24);
   words.splice(12, 0, "FREE");
+  return words;
+}
+
+function renderCard(words, markedSet){
+  grid.innerHTML = "";
+  banner.classList.remove("is-visible");
+  marked = markedSet;
 
   cellEls = words.map((text, i) => {
     const cell = document.createElement("div");
-    cell.className = "cell" + (i === 12 ? " is-free is-marked" : "");
+    cell.className = "cell" + (i === 12 ? " is-free" : "") + (marked.has(i) ? " is-marked" : "");
     cell.textContent = text;
     cell.dataset.index = i;
     if(i !== 12){
@@ -245,10 +279,17 @@ function buildCard(){
   checkWin();
 }
 
+function startNewCard(){
+  renderCard(generateWords(), new Set([12]));
+}
+
 function toggleCell(i){
   if(marked.has(i)) marked.delete(i); else marked.add(i);
   cellEls[i].classList.toggle("is-marked", marked.has(i));
   checkWin();
+  // Every tap after the first locks this card in for this browser, so a
+  // reload continues the same game instead of handing out a new card.
+  saveCard();
 }
 
 function checkWin(){
@@ -262,14 +303,23 @@ function checkWin(){
   }
 }
 
-document.getElementById("btn-new").addEventListener("click", buildCard);
+document.getElementById("btn-new").addEventListener("click", () => {
+  clearSavedCard();
+  startNewCard();
+});
 document.getElementById("btn-clear").addEventListener("click", () => {
   marked = new Set([12]);
   cellEls.forEach((el, i) => el.classList.toggle("is-marked", i === 12));
   checkWin();
+  saveCard();
 });
 
-buildCard();
+const saved = loadSavedCard();
+if(saved){
+  renderCard(saved.words, new Set(saved.marked));
+} else {
+  startNewCard();
+}
 </script>
 
 </body>
